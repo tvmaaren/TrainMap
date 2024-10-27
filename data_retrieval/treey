@@ -1,16 +1,13 @@
 <Station>
-	<Name>Twello</Name>
+	<Name>IJmuiden</Name>
 	<Coordinates>
-		<Latitude>52.238055555555555</Latitude>
-		<Longitude>6.1</Longitude>
+		<Latitude>52.46</Latitude>
+		<Longitude>4.594444444444444</Longitude>
 	</Coordinates>
 	<Openings>
-		<Opening>21&#160;nov&#160;1887</Opening>
-		<Opening>23&#160;mei&#160;1940</Opening>
-		<Opening>10&#160;dec&#160;2006</Opening>
+		<Opening>1&#160;nov&#160;1883</Opening>
 	</Openings>
 	<closures>
-		<Closure>15&#160;mei&#160;1938</Closure>
-		<Closure>4&#160;mei&#160;1947</Closure>
+		<Closure>25&#160;sep&#160;1983</Closure>
 	</closures>
 </Station>

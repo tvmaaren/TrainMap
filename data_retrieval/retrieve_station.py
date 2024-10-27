@@ -2,10 +2,11 @@
 from bs4 import BeautifulSoup
 import xml.etree.cElementTree as ET
 
-import requests
+#Some stations on stationsweb have a different name than on wikipedia.
+#This dictionary is used to translate between the two
+stationsweb_to_wikipedia = {"Voorst- Empe":"Voorst-Empe"}
 
-def stationsweb_url(station_name):
-    return("https://www.stationsweb.nl/station.asp?station="+station_name.lower())
+import requests
 
 def wikipedia_url(station_name):
     return("https://nl.wikipedia.org/wiki/Station_"+station_name.replace(" ","_"))
@@ -45,12 +46,16 @@ class Station:
         return(root)
         
 
-def retrieve_station(station_name):
-    stationsweb_page = requests.get(stationsweb_url(station_name))
+def retrieve_station(stationsweb_url):
+    stationsweb_page = requests.get(stationsweb_url)
     stationsweb_soup = BeautifulSoup(stationsweb_page.text, "html.parser")
+
+    station_name = stationsweb_soup.find("h3").text[8:-1]
+
     tables = stationsweb_soup.findAll("table")
     openings_and_closures = tables[4]
     openings_and_closures_list = openings_and_closures.findAll("tr")
+    print(openings_and_closures_list)
     
     opening_dates = []
     closure_dates = []
@@ -58,23 +63,35 @@ def retrieve_station(station_name):
         opening_and_closure_columns = opening_or_closure.findAll("td")
         is_opening_or_closure = opening_and_closure_columns[0].text
         date = opening_and_closure_columns[1].text
-        if(is_opening_or_closure=="Geopend op" or is_opening_or_closure == "Heropend op"):
+        if(is_opening_or_closure[:7]=="Geopend" or is_opening_or_closure[:8]=="Heropend"):
+            print("erin")
             opening_dates.append(date)
-        if(is_opening_or_closure=="Gesloten op"):
+        elif(is_opening_or_closure[:8]=="Gesloten"):
             closure_dates.append(date)
+    print(opening_dates)
 
     #For the coordinates I need to load wikipedia, because stationsweb does not
     #provide them.
-    wikipedia_page = requests.get(wikipedia_url(station_name))
-    wikipedia_soup = BeautifulSoup(wikipedia_page.text, "html.parser")
-    wikipedia_coordinates = wikipedia_soup.find("span", attrs={"id":"tpl_Coordinaten"})
-    [latitude_string, longitude_string] = wikipedia_coordinates.a.text.split(", ")
-    latitude = string_to_coordinates(latitude_string[:-3])
-    longitude = string_to_coordinates(longitude_string[:-3])
+    latitude = None
+    longitude = None
+    try:
+        wikipedia_station_name = ""
+        if(station_name in stationsweb_to_wikipedia.keys()):
+            wikipedia_station_name = stationsweb_to_wikipedia[station_name]
+        else:
+            wikipedia_station_name = station_name
+        wikipedia_page = requests.get(wikipedia_url(wikipedia_station_name))
+        wikipedia_soup = BeautifulSoup(wikipedia_page.text, "html.parser")
+        wikipedia_coordinates = wikipedia_soup.find("span", attrs={"id":"tpl_Coordinaten"})
+        [latitude_string, longitude_string] = wikipedia_coordinates.a.text.split(", ")
+        latitude = string_to_coordinates(latitude_string[:-3])
+        longitude = string_to_coordinates(longitude_string[:-3])
+    except:
+        print(f"Was not able to retrieve the coordinates of station {station_name}")
     
     station = Station(station_name,(latitude,longitude),opening_dates,closure_dates)
     return(station)
-root = retrieve_station("Twello").toXML()#Just for testing
+root = retrieve_station("https://www.stationsweb.nl/station.asp?station=ijmuiden").toXML()#Just for testing
 tree = ET.ElementTree(root)
 ET.indent(tree, space="\t", level=0)
 tree.write("treey")
