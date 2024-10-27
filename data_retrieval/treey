@@ -1,0 +1,16 @@
+<Station>
+	<Name>Twello</Name>
+	<Coordinates>
+		<Latitude>52.238055555555555</Latitude>
+		<Longitude>6.1</Longitude>
+	</Coordinates>
+	<Openings>
+		<Opening>21&#160;nov&#160;1887</Opening>
+		<Opening>23&#160;mei&#160;1940</Opening>
+		<Opening>10&#160;dec&#160;2006</Opening>
+	</Openings>
+	<closures>
+		<Closure>15&#160;mei&#160;1938</Closure>
+		<Closure>4&#160;mei&#160;1947</Closure>
+	</closures>
+</Station>
