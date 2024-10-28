@@ -1,8 +1,12 @@
-#Web Scraping library
+ittps://www.stationsweb.nl/station.asp?station=ijmuidenhan on wikipedia.
+iWeb Scraping library
 from bs4 import BeautifulSoup
 import xml.etree.cElementTree as ET
 
-#Some stations on stationsweb have a different name than on wikipedia.
+iWeb Scraping library
+from bs4 import BeautifulSoup
+import xml.etree.cElementTree as ET
+
 #This dictionary is used to translate between the two
 stationsweb_to_wikipedia = {"Voorst- Empe":"Voorst-Empe"}
 
@@ -11,7 +15,6 @@ import requests
 def wikipedia_url(station_name):
     return("https://nl.wikipedia.org/wiki/Station_"+station_name.replace(" ","_"))
 
-#For example: This converts 52° 14′ 17″ to 52.238056
 def string_to_coordinates(string):
     string_without_symbols = string.replace("°","").replace("′","").replace("″","")
     [number_1,number_2,number_3] = string_without_symbols.split()
@@ -55,7 +58,6 @@ def retrieve_station(stationsweb_url):
     tables = stationsweb_soup.findAll("table")
     openings_and_closures = tables[4]
     openings_and_closures_list = openings_and_closures.findAll("tr")
-    print(openings_and_closures_list)
     
     opening_dates = []
     closure_dates = []
@@ -64,11 +66,9 @@ def retrieve_station(stationsweb_url):
         is_opening_or_closure = opening_and_closure_columns[0].text
         date = opening_and_closure_columns[1].text
         if(is_opening_or_closure[:7]=="Geopend" or is_opening_or_closure[:8]=="Heropend"):
-            print("erin")
             opening_dates.append(date)
         elif(is_opening_or_closure[:8]=="Gesloten"):
             closure_dates.append(date)
-    print(opening_dates)
 
     #For the coordinates I need to load wikipedia, because stationsweb does not
     #provide them.
@@ -91,7 +91,3 @@ def retrieve_station(stationsweb_url):
     
     station = Station(station_name,(latitude,longitude),opening_dates,closure_dates)
     return(station)
-root = retrieve_station("https://www.stationsweb.nl/station.asp?station=ijmuiden").toXML()#Just for testing
-tree = ET.ElementTree(root)
-ET.indent(tree, space="\t", level=0)
-tree.write("treey")
