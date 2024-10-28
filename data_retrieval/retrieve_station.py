@@ -1,5 +1,4 @@
-ittps://www.stationsweb.nl/station.asp?station=ijmuidenhan on wikipedia.
-iWeb Scraping library
+#Web Scraping library
 from bs4 import BeautifulSoup
 import xml.etree.cElementTree as ET
 
